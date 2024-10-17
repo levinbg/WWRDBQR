@@ -91,12 +91,12 @@ if __name__ == "__main__":
     input_P5.grid(column=1, row=8)
     
      # Display QR Code
-    max_row = frame.grid_size()[1] 
+    max_row = frame.grid_size()[1]
     qr = create_qr(data)
     tkqr = ImageTk.PhotoImage(qr)
     label = tk.Label(frame, image=tkqr)
     label.image = tkqr
-    label.grid(column=2, row=0, rowspan=max_row, ipadx=10, ipady=20, sticky='nsew')
+    label.grid(column=2, row=0, rowspan=max_row, ipadx=20, ipady=20, sticky="se")
 
     # Start the GUI
     window.mainloop()
