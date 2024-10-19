@@ -14,7 +14,7 @@ __email__ = "levinbg@fan.gov"
 __status__ = "Alpha"
 """
 
-import configparser
+import tomli, tomli_w
 import os
 import tkinter as tk
 from tkinter import filedialog, messagebox, simpledialog
@@ -41,22 +41,22 @@ def save_qr(qr_image):
 
 def initialize_ini():
 
-    ini_exists = os.path.isfile("./settings.ini")
-    config = configparser.ConfigParser()
+    settings_file = "./settings.toml"
+    ini_exists = os.path.isfile(settings_file)
 
     if ini_exists:
-        with open("settings.ini", "r") as configfile:
-            config.read(configfile)
+        with open(settings_file, "rb") as configfile:
+            config = tomli.load(configfile)
     else:
         username = simpledialog.askstring("Username", "Please enter your username:")
         shared_secret = simpledialog.askstring("Shared Secret", "Please enter the shared secret:")
-        config['Required'] = {"UserID": username, "PVer": "1", "SharedSecret": shared_secret, "UUID": shortuuid.uuid()}
+        config = {"Required": {"UserID": username, "PVer": "1", "SharedSecret": shared_secret, "UUID": shortuuid.uuid()}}
 
         try:
-            with open('settings.ini', 'w') as configfile:
-                config.write(configfile)
+            with open(settings_file, 'wb') as configfile:
+                tomli_w.dump(config, configfile)
             # end open file
-        except FileNotFoundError as e:
+        except FileNotFoundError:
             pass
 
     return config
