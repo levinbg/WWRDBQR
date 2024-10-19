@@ -14,11 +14,13 @@ __email__ = "levinbg@fan.gov"
 __status__ = "Alpha"
 """
 
-
+import configparser
+import os
 import tkinter as tk
-from tkinter import filedialog, messagebox
+from tkinter import filedialog, messagebox, simpledialog
 from PIL import ImageTk
 import qrcode
+import shortuuid
 
 
 def create_qr(qr_data, qr_size=250):
@@ -36,10 +38,28 @@ def save_qr(qr_image):
     if file_path:
         qr_image.save(file_path)
 
+def initialize_ini():
+
+    ini_exists = os.path.isfile("./settings.ini")
+    config = configparser.ConfigParser()
+
+    if not ini_exists:
+        username = simpledialog.askstring("Username", "Please enter your username:")
+        shared_secret = simpledialog.askstring("Shared Secret", "Please enter the shared secret:")
+        config['Required'] = {"Username": username, "UUID": shortuuid.uuid(), "Shared Secret": shared_secret}
+
+    try:
+        with open('settings.ini', 'w') as configfile:
+            config.write(configfile)
+        # end open file
+    except FileNotFoundError as e:
+        pass
+
 
 if __name__ == "__main__":
     data = "UserID:LevinBG;PVer:1;SharedSecret:104ab42f11;UUID:vytxeTZskVKR7C7WgdSP3d;EquipmentType:repeater;Make:Motorola;Model:GTR8000;SystemName:EAC;P1:1.1;P2:2.2;P3:3.3;P4:4.4;P5:5.5;P6:6.6;P7:7.7;P8:8.8;P9:9.9;P10:10.10"
 
+    initialize_ini()
     # Create and name window instance
     window = tk.Tk()
     window.title("QR Code Display")
@@ -116,7 +136,7 @@ if __name__ == "__main__":
     tkqr = ImageTk.PhotoImage(qr)
     qr_panel = tk.Label(qr_frame, image=tkqr)
     qr_panel.pack()
-    qr_frame.pack(side=tk.RIGHT)
+    qr_frame.pack(side=tk.RIGHT, padx=(20,0))
 
     # Start the GUI
     window.mainloop()
