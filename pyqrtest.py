@@ -21,6 +21,7 @@ from tkinter import filedialog, messagebox, simpledialog
 from PIL import ImageTk
 import qrcode
 import shortuuid
+from icecream import ic
 
 
 def create_qr(qr_data, qr_size=250):
@@ -43,23 +44,30 @@ def initialize_ini():
     ini_exists = os.path.isfile("./settings.ini")
     config = configparser.ConfigParser()
 
-    if not ini_exists:
+    if ini_exists:
+        with open("settings.ini", "r") as configfile:
+            config.read(configfile)
+    else:
         username = simpledialog.askstring("Username", "Please enter your username:")
         shared_secret = simpledialog.askstring("Shared Secret", "Please enter the shared secret:")
-        config['Required'] = {"Username": username, "UUID": shortuuid.uuid(), "Shared Secret": shared_secret}
+        config['Required'] = {"UserID": username, "PVer": "1", "SharedSecret": shared_secret, "UUID": shortuuid.uuid()}
 
-    try:
-        with open('settings.ini', 'w') as configfile:
-            config.write(configfile)
-        # end open file
-    except FileNotFoundError as e:
-        pass
+        try:
+            with open('settings.ini', 'w') as configfile:
+                config.write(configfile)
+            # end open file
+        except FileNotFoundError as e:
+            pass
+
+    return config
 
 
 if __name__ == "__main__":
     data = "UserID:LevinBG;PVer:1;SharedSecret:104ab42f11;UUID:vytxeTZskVKR7C7WgdSP3d;EquipmentType:repeater;Make:Motorola;Model:GTR8000;SystemName:EAC;P1:1.1;P2:2.2;P3:3.3;P4:4.4;P5:5.5;P6:6.6;P7:7.7;P8:8.8;P9:9.9;P10:10.10"
 
-    initialize_ini()
+    config_ini = initialize_ini()
+    ic(config_ini["Required"]["UserID"])
+
     # Create and name window instance
     window = tk.Tk()
     window.title("QR Code Display")
