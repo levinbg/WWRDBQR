@@ -13,7 +13,6 @@ ezsheets
 pillow
 pyautogui
 pyperclip
-pywin32
 black
 flake8
 yapf
@@ -60,3 +59,4 @@ nltk
 geopandas[all]
 scikit-rf
 qrcode
+tomlkit
