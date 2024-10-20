@@ -43,6 +43,7 @@ def initialize_ini():
 
     settings_file = "./settings.toml"
     ini_exists = os.path.isfile(settings_file)
+    # TODO: add read interface TOML
 
     if ini_exists:
         with open(settings_file, "r") as configfile:
@@ -65,6 +66,7 @@ def initialize_ini():
             # end open file
         except FileNotFoundError:
             pass
+
 
     return toml_settings
 
@@ -131,6 +133,8 @@ if __name__ == "__main__":
 
     label_P5 = tk.Label(input_frame, text="P5", height=1).grid(column=0, row=8)
     input_P5 = tk.Text(input_frame, width=15, height=1).grid(column=1, row=8)
+
+    # TODO: add button to dynamically generate qr code
 
     input_frame.pack(side=tk.LEFT, anchor="ne")
 
