@@ -14,7 +14,7 @@ __email__ = "levinbg@fan.gov"
 __status__ = "Alpha"
 """
 
-import tomli, tomli_w
+import tomlkit
 import os
 import tkinter as tk
 from tkinter import filedialog, messagebox, simpledialog, ttk
@@ -45,21 +45,28 @@ def initialize_ini():
     ini_exists = os.path.isfile(settings_file)
 
     if ini_exists:
-        with open(settings_file, "rb") as configfile:
-            config = tomli.load(configfile)
+        with open(settings_file, "r") as configfile:
+            toml_settings = tomlkit.loads(configfile)
     else:
         username = simpledialog.askstring("Username", "Please enter your username:")
         shared_secret = simpledialog.askstring("Shared Secret", "Please enter the shared secret:")
-        config = {"Required": {"UserID": username, "PVer": "1", "SharedSecret": shared_secret, "UUID": shortuuid.uuid()}}
+        toml_settings = tomlkit.document()
+        toml_settings.add(tomlkit.comment("Settings TOML Document"))
+        toml_required = tomlkit.table()
+        toml_required["UserID"] = username
+        toml_required["PVer"] = "1"
+        toml_required["ShareSecret"] = shared_secret
+        toml_required["UUID"] = shortuuid.uuid()
+        toml_settings.add("Required", toml_required)
 
         try:
-            with open(settings_file, 'wb') as configfile:
-                tomli_w.dump(config, configfile)
+            with open(settings_file, 'w') as configfile:
+                configfile.write(tomlkit.dumps(toml_settings))
             # end open file
         except FileNotFoundError:
             pass
 
-    return config
+    return toml_settings
 
 
 if __name__ == "__main__":
