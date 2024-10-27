@@ -39,6 +39,7 @@ def save_qr(qr_image):
     if file_path:
         qr_image.save(file_path)
 
+
 def generate_qr(qr_data, config_data):
     qr_data_formulate = (
         f"UserID:{config_data["Required"]["UserID"]};"
@@ -59,14 +60,14 @@ def generate_qr(qr_data, config_data):
         f"P8:8.8;"
         f"P9:9.9;"
         f"P10:10.10;"
-        )
+    )
     qr = create_qr(qr_data)
     tkqr = ImageTk.PhotoImage(qr)
     qr_panel.configure(image=tkqr)
     qr_panel.image = tkqr
 
-def initialize_ini():
 
+def initialize_ini():
     settings_file = "./settings.toml"
     ini_exists = os.path.isfile(settings_file)
     # TODO: add read interface TOML
@@ -76,7 +77,9 @@ def initialize_ini():
             toml_settings = tomlkit.load(configfile)
     else:
         username = simpledialog.askstring("Username", "Please enter your username:")
-        shared_secret = simpledialog.askstring("Shared Secret", "Please enter the shared secret:")
+        shared_secret = simpledialog.askstring(
+            "Shared Secret", "Please enter the shared secret:"
+        )
         toml_settings = tomlkit.document()
         toml_settings.add(tomlkit.comment("Settings TOML Document"))
         toml_required = tomlkit.table()
@@ -87,12 +90,11 @@ def initialize_ini():
         toml_settings.add("Required", toml_required)
 
         try:
-            with open(settings_file, 'w') as configfile:
+            with open(settings_file, "w") as configfile:
                 configfile.write(tomlkit.dumps(toml_settings))
             # end open file
         except FileNotFoundError:
             pass
-
 
     return toml_settings
 
@@ -130,28 +132,38 @@ if __name__ == "__main__":
     # Configure the window to use the menu bar
     window.config(menu=menubar)
 
-     # Display QR Code Frame
+    # Display QR Code Frame
     qr_frame = tk.Frame(frame)
     image = Image.open("RFHSign.png").resize((250, 250))
     tkqr = ImageTk.PhotoImage(image)
     qr_panel = tk.Label(qr_frame, image=tkqr)
     qr_panel.pack()
-    qr_frame.pack(side=tk.RIGHT, padx=(20,0))
+    qr_frame.pack(side=tk.RIGHT, padx=(20, 0))
 
     input_frame = tk.Frame(frame)
 
     make = ["Motorola", "Tait"]
     model = ["GTR8000", "Quantar", "9100", "9400"]
-    system = ["E&E", "EAC", "Admin",]
+    system = [
+        "E&E",
+        "EAC",
+        "Admin",
+    ]
 
     label_make = tk.Label(input_frame, text="Make", height=1).grid(column=0, row=0)
-    combo_make = ttk.Combobox(input_frame, state="readonly", values=make, width=10).grid(column=1, row=0)
+    combo_make = ttk.Combobox(
+        input_frame, state="readonly", values=make, width=10
+    ).grid(column=1, row=0)
 
     label_model = tk.Label(input_frame, text="Model", height=1).grid(column=0, row=2)
-    combo_model = ttk.Combobox(input_frame, state="readonly", values=model, width=10).grid(column=1, row=2)
+    combo_model = ttk.Combobox(
+        input_frame, state="readonly", values=model, width=10
+    ).grid(column=1, row=2)
 
     label_system = tk.Label(input_frame, text="System", height=1).grid(column=0, row=3)
-    combo_system = ttk.Combobox(input_frame, state="readonly", values=system, width=10).grid(column=1, row=3)
+    combo_system = ttk.Combobox(
+        input_frame, state="readonly", values=system, width=10
+    ).grid(column=1, row=3)
 
     label_P1 = tk.Label(input_frame, text="P1", height=1).grid(column=0, row=4)
     input_P1 = tk.Text(input_frame, width=15, height=1).grid(column=1, row=4)
@@ -168,11 +180,15 @@ if __name__ == "__main__":
     label_P5 = tk.Label(input_frame, text="P5", height=1).grid(column=0, row=8)
     input_P5 = tk.Text(input_frame, width=15, height=1).grid(column=1, row=8)
 
-    button_generate = tk.Button(input_frame, text="Generate!", width=15, height=1, command=lambda:generate_qr(data, config_ini)).grid(column=1,row=9)
+    button_generate = tk.Button(
+        input_frame,
+        text="Generate!",
+        width=15,
+        height=1,
+        command=lambda: generate_qr(data, config_ini),
+    ).grid(column=1, row=9)
 
     input_frame.pack(side=tk.LEFT, anchor="ne")
-
-
 
     # Start the GUI
     window.mainloop()
