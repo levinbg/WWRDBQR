@@ -9,3 +9,16 @@ To run this app you need to have python 3.11 or greater and the following librar
 - pillow
 - qrcode
 - tomlkit
+
+## Future
+This app is currently in alpha and is in active development. Future features include
+- Dynamically generated P questions for PMIs
+- Packaging as a platform executable for windows (and maybe other platforms)
+- Build tool made from invoke
+- API documentation using MKDocs and autodoc
+- Tests using pytest and coverage
+- Linting and code complexity metrics
+- Build automation
+
+## Project Involvement
+Please use the Github bug tracker to submit bugs and change requests. PR's welcome.

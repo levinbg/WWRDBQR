@@ -18,7 +18,7 @@ import tomlkit
 import os
 import tkinter as tk
 from tkinter import filedialog, messagebox, simpledialog, ttk
-from PIL import ImageTk
+from PIL import ImageTk, Image
 import qrcode
 import shortuuid
 from icecream import ic
@@ -39,6 +39,32 @@ def save_qr(qr_image):
     if file_path:
         qr_image.save(file_path)
 
+def generate_qr(qr_data, config_data):
+    qr_data_formulate = (
+        f"UserID:{config_data["Required"]["UserID"]};"
+        f"PVer:{config_data["Required"]["PVer"]};"
+        f"SharedSecret:{config_ini["Required"]["SharedSecret"]};"
+        f"UUID:{config_ini["Required"]["UUID"]};"
+        f"EquipmentType:repeater;"
+        f"Make:Motorola;"
+        f"Model:GTR8000;"
+        f"SystemName:EAC;"
+        f"P1:1.1;"
+        f"P2:2.2;"
+        f"P3:3.3;"
+        f"P4:4.4;"
+        f"P5:5.5;"
+        f"P6:6.6;"
+        f"P7:7.7;"
+        f"P8:8.8;"
+        f"P9:9.9;"
+        f"P10:10.10;"
+        )
+    qr = create_qr(qr_data)
+    tkqr = ImageTk.PhotoImage(qr)
+    qr_panel.configure(image=tkqr)
+    qr_panel.image = tkqr
+
 def initialize_ini():
 
     settings_file = "./settings.toml"
@@ -56,7 +82,7 @@ def initialize_ini():
         toml_required = tomlkit.table()
         toml_required["UserID"] = username
         toml_required["PVer"] = "1"
-        toml_required["ShareSecret"] = shared_secret
+        toml_required["SharedSecret"] = shared_secret
         toml_required["UUID"] = shortuuid.uuid()
         toml_settings.add("Required", toml_required)
 
@@ -104,6 +130,14 @@ if __name__ == "__main__":
     # Configure the window to use the menu bar
     window.config(menu=menubar)
 
+     # Display QR Code Frame
+    qr_frame = tk.Frame(frame)
+    image = Image.open("RFHSign.png").resize((250, 250))
+    tkqr = ImageTk.PhotoImage(image)
+    qr_panel = tk.Label(qr_frame, image=tkqr)
+    qr_panel.pack()
+    qr_frame.pack(side=tk.RIGHT, padx=(20,0))
+
     input_frame = tk.Frame(frame)
 
     make = ["Motorola", "Tait"]
@@ -134,16 +168,11 @@ if __name__ == "__main__":
     label_P5 = tk.Label(input_frame, text="P5", height=1).grid(column=0, row=8)
     input_P5 = tk.Text(input_frame, width=15, height=1).grid(column=1, row=8)
 
-    # TODO: add button to dynamically generate qr code
+    button_generate = tk.Button(input_frame, text="Generate!", width=15, height=1, command=lambda:generate_qr(data, config_ini)).grid(column=1,row=9)
 
     input_frame.pack(side=tk.LEFT, anchor="ne")
 
-    # Display QR Code
-    qr_frame = tk.Frame(frame)
-    qr = create_qr(data)
-    tkqr = ImageTk.PhotoImage(qr)
-    qr_panel = tk.Label(qr_frame, image=tkqr).pack(expand=True)
-    qr_frame.pack(side=tk.RIGHT, padx=(20,0))
+
 
     # Start the GUI
     window.mainloop()
