@@ -14,14 +14,15 @@ __email__ = "levinbg@fan.gov"
 __status__ = "Alpha"
 """
 
-import tomlkit
 import os
 import tkinter as tk
 from tkinter import filedialog, messagebox, simpledialog, ttk
-from PIL import ImageTk, Image
+
 import qrcode
 import shortuuid
+import tomlkit
 from icecream import ic
+from PIL import Image, ImageTk
 
 
 def create_qr(qr_data, qr_size=250):
@@ -94,7 +95,7 @@ def initialize_ini():
         toml_settings.add("Required", toml_required)
 
         try:
-            with open(settings_file, "w") as configfile:
+            with open(settings_file, "w",  encoding="utf-8") as configfile:
                 configfile.write(tomlkit.dumps(toml_settings))
             # end open file
         except FileNotFoundError:
@@ -171,34 +172,34 @@ if __name__ == "__main__":
         "Admin",
     ]
 
-    label_make = tk.Label(input_frame, text="Make", height=1).grid(column=0, row=0)
+    tk.Label(input_frame, text="Make", height=1).grid(column=0, row=0)
     combo_make = ttk.Combobox(
         input_frame, state="readonly", values=make, width=10
     ).grid(column=1, row=0)
 
-    label_model = tk.Label(input_frame, text="Model", height=1).grid(column=0, row=2)
+    tk.Label(input_frame, text="Model", height=1).grid(column=0, row=2)
     combo_model = ttk.Combobox(
         input_frame, state="readonly", values=model, width=10
     ).grid(column=1, row=2)
 
-    label_system = tk.Label(input_frame, text="System", height=1).grid(column=0, row=3)
+    tk.Label(input_frame, text="System", height=1).grid(column=0, row=3)
     combo_system = ttk.Combobox(
         input_frame, state="readonly", values=system, width=10
     ).grid(column=1, row=3)
 
-    label_P1 = tk.Label(input_frame, text="P1", height=1).grid(column=0, row=4)
+    tk.Label(input_frame, text="P1", height=1).grid(column=0, row=4)
     input_P1 = tk.Text(input_frame, width=15, height=1).grid(column=1, row=4)
 
-    label_P2 = tk.Label(input_frame, text="P2", height=1).grid(column=0, row=5)
+    tk.Label(input_frame, text="P2", height=1).grid(column=0, row=5)
     input_P2 = tk.Text(input_frame, width=15, height=1).grid(column=1, row=5)
 
-    label_P3 = tk.Label(input_frame, text="P3", height=1).grid(column=0, row=6)
+    tk.Label(input_frame, text="P3", height=1).grid(column=0, row=6)
     input_P3 = tk.Text(input_frame, width=15, height=1).grid(column=1, row=6)
 
-    label_P4 = tk.Label(input_frame, text="P4", height=1).grid(column=0, row=7)
+    tk.Label(input_frame, text="P4", height=1).grid(column=0, row=7)
     input_P4 = tk.Text(input_frame, width=15, height=1).grid(column=1, row=7)
 
-    label_P5 = tk.Label(input_frame, text="P5", height=1).grid(column=0, row=8)
+    tk.Label(input_frame, text="P5", height=1).grid(column=0, row=8)
     input_P5 = tk.Text(input_frame, width=15, height=1).grid(column=1, row=8)
 
     button_generate = tk.Button(
