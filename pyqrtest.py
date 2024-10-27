@@ -25,6 +25,7 @@ from icecream import ic
 
 
 def create_qr(qr_data, qr_size=250):
+    ic(qr_data)
     img = qrcode.make(qr_data, version=1)
     return img.resize((qr_size, qr_size))
 
@@ -33,19 +34,19 @@ def test_dialog(dialog_text):
     messagebox.showinfo("Example", dialog_text)
 
 
-def save_qr(qr_image):
+def save_qr(qr):
     files = [("Image File", "*.png"), ("All Files", "*.*")]
     file_path = filedialog.asksaveasfilename(filetypes=files, defaultextension=files)
     if file_path:
-        qr_image.save(file_path)
+        qr.save(file_path)
 
 
 def generate_qr(qr_data, config_data):
     qr_data_formulate = (
         f"UserID:{config_data["Required"]["UserID"]};"
         f"PVer:{config_data["Required"]["PVer"]};"
-        f"SharedSecret:{config_ini["Required"]["SharedSecret"]};"
-        f"UUID:{config_ini["Required"]["UUID"]};"
+        f"SharedSecret:{config_data["Required"]["SharedSecret"]};"
+        f"UUID:{config_data["Required"]["UUID"]};"
         f"EquipmentType:repeater;"
         f"Make:Motorola;"
         f"Model:GTR8000;"
@@ -61,7 +62,10 @@ def generate_qr(qr_data, config_data):
         f"P9:9.9;"
         f"P10:10.10;"
     )
-    qr = create_qr(qr_data)
+    return create_qr(qr_data_formulate)
+
+
+def display_qr(qr):
     tkqr = ImageTk.PhotoImage(qr)
     qr_panel.configure(image=tkqr)
     qr_panel.image = tkqr
@@ -100,10 +104,25 @@ def initialize_ini():
 
 
 if __name__ == "__main__":
-    data = "UserID:LevinBG;PVer:1;SharedSecret:104ab42f11;UUID:vytxeTZskVKR7C7WgdSP3d;EquipmentType:repeater;Make:Motorola;Model:GTR8000;SystemName:EAC;P1:1.1;P2:2.2;P3:3.3;P4:4.4;P5:5.5;P6:6.6;P7:7.7;P8:8.8;P9:9.9;P10:10.10"
+    data = {
+        "EquipmentType": None,
+        "Make": None,
+        "Model": None,
+        "SystemName": None,
+        "P1": None,
+        "P2": None,
+        "P3": None,
+        "P4": None,
+        "P5": None,
+        "P6": None,
+        "P7": None,
+        "P8": None,
+        "P9": None,
+        "P10": None,
+    }
 
     config_ini = initialize_ini()
-    ic(config_ini["Required"]["UserID"])
+    ic(config_ini)
 
     # Create and name window instance
     window = tk.Tk()
@@ -117,7 +136,9 @@ if __name__ == "__main__":
 
     # Create a File menu
     filemenu = tk.Menu(menubar, tearoff=0)
-    filemenu.add_command(label="Save QR", command=lambda: save_qr(qr))
+    filemenu.add_command(
+        label="Save QR", command=lambda: save_qr(generate_qr(data, config_ini))
+    )
     filemenu.add_separator()
     filemenu.add_command(label="Exit", command=window.quit)
     menubar.add_cascade(label="File", menu=filemenu)
@@ -135,8 +156,8 @@ if __name__ == "__main__":
     # Display QR Code Frame
     qr_frame = tk.Frame(frame)
     image = Image.open("RFHSign.png").resize((250, 250))
-    tkqr = ImageTk.PhotoImage(image)
-    qr_panel = tk.Label(qr_frame, image=tkqr)
+    base = ImageTk.PhotoImage(image)
+    qr_panel = tk.Label(qr_frame, image=base)
     qr_panel.pack()
     qr_frame.pack(side=tk.RIGHT, padx=(20, 0))
 
@@ -185,7 +206,7 @@ if __name__ == "__main__":
         text="Generate!",
         width=15,
         height=1,
-        command=lambda: generate_qr(data, config_ini),
+        command=lambda: display_qr(generate_qr(data, config_ini)),
     ).grid(column=1, row=9)
 
     input_frame.pack(side=tk.LEFT, anchor="ne")
