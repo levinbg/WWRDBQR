@@ -175,32 +175,36 @@ if __name__ == "__main__":
     tk.Label(input_frame, text="Make", height=1).grid(column=0, row=0)
     combo_make = ttk.Combobox(
         input_frame, state="readonly", values=make, width=10
-    ).grid(column=1, row=0)
+    )
+    data["Make"] = combo_make.get()
+    combo_make.grid(column=1, row=0)
 
     tk.Label(input_frame, text="Model", height=1).grid(column=0, row=2)
     combo_model = ttk.Combobox(
         input_frame, state="readonly", values=model, width=10
-    ).grid(column=1, row=2)
+    )
+    combo_model.grid(column=1, row=2)
 
     tk.Label(input_frame, text="System", height=1).grid(column=0, row=3)
     combo_system = ttk.Combobox(
         input_frame, state="readonly", values=system, width=10
-    ).grid(column=1, row=3)
+    )
+    combo_system.grid(column=1, row=3)
 
-    tk.Label(input_frame, text="P1", height=1).grid(column=0, row=4)
-    input_P1 = tk.Text(input_frame, width=15, height=1).grid(column=1, row=4)
+    # tk.Label(input_frame, text="P1", height=1).grid(column=0, row=4)
+    # input_P1 = tk.Text(input_frame, width=15, height=1).get("1.0","end-1c").grid(column=1, row=4)
 
-    tk.Label(input_frame, text="P2", height=1).grid(column=0, row=5)
-    input_P2 = tk.Text(input_frame, width=15, height=1).grid(column=1, row=5)
+    # tk.Label(input_frame, text="P2", height=1).grid(column=0, row=5)
+    # input_P2 = tk.Text(input_frame, width=15, height=1).get("1.0","end-1c").grid(column=1, row=5)
 
-    tk.Label(input_frame, text="P3", height=1).grid(column=0, row=6)
-    input_P3 = tk.Text(input_frame, width=15, height=1).grid(column=1, row=6)
+    # tk.Label(input_frame, text="P3", height=1).grid(column=0, row=6)
+    # input_P3 = tk.Text(input_frame, width=15, height=1).get("1.0","end-1c").grid(column=1, row=6)
 
-    tk.Label(input_frame, text="P4", height=1).grid(column=0, row=7)
-    input_P4 = tk.Text(input_frame, width=15, height=1).grid(column=1, row=7)
+    # tk.Label(input_frame, text="P4", height=1).grid(column=0, row=7)
+    # input_P4 = tk.Text(input_frame, width=15, height=1).get("1.0","end-1c").grid(column=1, row=7)
 
-    tk.Label(input_frame, text="P5", height=1).grid(column=0, row=8)
-    input_P5 = tk.Text(input_frame, width=15, height=1).grid(column=1, row=8)
+    # tk.Label(input_frame, text="P5", height=1).grid(column=0, row=8)
+    # input_P5 = tk.Text(input_frame, width=15, height=1).get("1.0","end-1c").grid(column=1, row=8)
 
     button_generate = tk.Button(
         input_frame,
