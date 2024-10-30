@@ -25,7 +25,7 @@ from icecream import ic
 from PIL import Image, ImageTk
 
 
-def create_qr(qr_data, qr_size=250):
+def create_qr(qr_data, qr_size=500):
     ic(qr_data)
     img = qrcode.make(qr_data, version=1)
     return img.resize((qr_size, qr_size))
@@ -42,27 +42,45 @@ def save_qr(qr):
         qr.save(file_path)
 
 
-def generate_qr(qr_data, config_data):
+def get_user_input():
+    user_input = {
+        "equipment_type": "repeater",
+        "make": combo_make.get(),
+        "model": combo_model.get(),
+        "network": combo_network.get(),
+        "P1": input_P1.get("1.0", "end-1c"),
+        "P2": input_P2.get("1.0", "end-1c"),
+        "P3": input_P3.get("1.0", "end-1c"),
+        "P4": input_P4.get("1.0", "end-1c"),
+        "P5": input_P5.get("1.0", "end-1c"),
+        }
+
+    user_input = {key: (None if not value else value) for key, value in user_input.items()}
+
+    return user_input
+
+
+
+def generate_qr(config_data):
+    user_input = get_user_input()
+
     qr_data_formulate = (
         f"UserID:{config_data["Required"]["UserID"]};"
         f"PVer:{config_data["Required"]["PVer"]};"
         f"SharedSecret:{config_data["Required"]["SharedSecret"]};"
         f"UUID:{config_data["Required"]["UUID"]};"
-        f"EquipmentType:repeater;"
-        f"Make:Motorola;"
-        f"Model:GTR8000;"
-        f"SystemName:EAC;"
-        f"P1:1.1;"
-        f"P2:2.2;"
-        f"P3:3.3;"
-        f"P4:4.4;"
-        f"P5:5.5;"
-        f"P6:6.6;"
-        f"P7:7.7;"
-        f"P8:8.8;"
-        f"P9:9.9;"
-        f"P10:10.10;"
+        f"EquipmentType:{user_input["equipment_type"]};"
+        f"Make:{user_input["make"]};"
+        f"Model:{user_input["model"]};"
+        f"Network:{user_input["network"]};"
+        f"P1:{user_input["P1"]};"
+        f"P2:{user_input["P2"]};"
+        f"P3:{user_input["P3"]};"
+        f"P4:{user_input["P4"]};"
+        f"P5:{user_input["P5"]};"
     )
+
+    ic(qr_data_formulate)
     return create_qr(qr_data_formulate)
 
 
@@ -105,24 +123,9 @@ def initialize_ini():
 
 
 if __name__ == "__main__":
-    data = {
-        "EquipmentType": None,
-        "Make": None,
-        "Model": None,
-        "SystemName": None,
-        "P1": None,
-        "P2": None,
-        "P3": None,
-        "P4": None,
-        "P5": None,
-        "P6": None,
-        "P7": None,
-        "P8": None,
-        "P9": None,
-        "P10": None,
-    }
-
     config_ini = initialize_ini()
+
+    qr_size = 500
     ic(config_ini)
 
     # Create and name window instance
@@ -138,7 +141,7 @@ if __name__ == "__main__":
     # Create a File menu
     filemenu = tk.Menu(menubar, tearoff=0)
     filemenu.add_command(
-        label="Save QR", command=lambda: save_qr(generate_qr(data, config_ini))
+        label="Save QR", command=lambda: save_qr(generate_qr(config_ini))
     )
     filemenu.add_separator()
     filemenu.add_command(label="Exit", command=window.quit)
@@ -156,7 +159,7 @@ if __name__ == "__main__":
 
     # Display QR Code Frame
     qr_frame = tk.Frame(frame)
-    image = Image.open("RFHSign.png").resize((250, 250))
+    image = Image.open("RFHSign.png").resize((qr_size, qr_size))
     base = ImageTk.PhotoImage(image)
     qr_panel = tk.Label(qr_frame, image=base)
     qr_panel.pack()
@@ -166,7 +169,7 @@ if __name__ == "__main__":
 
     make = ["Motorola", "Tait"]
     model = ["GTR8000", "Quantar", "9100", "9400"]
-    system = [
+    network = [
         "E&E",
         "EAC",
         "Admin",
@@ -176,7 +179,6 @@ if __name__ == "__main__":
     combo_make = ttk.Combobox(
         input_frame, state="readonly", values=make, width=10
     )
-    data["Make"] = combo_make.get()
     combo_make.grid(column=1, row=0)
 
     tk.Label(input_frame, text="Model", height=1).grid(column=0, row=2)
@@ -185,33 +187,38 @@ if __name__ == "__main__":
     )
     combo_model.grid(column=1, row=2)
 
-    tk.Label(input_frame, text="System", height=1).grid(column=0, row=3)
-    combo_system = ttk.Combobox(
-        input_frame, state="readonly", values=system, width=10
+    tk.Label(input_frame, text="Network", height=1).grid(column=0, row=3)
+    combo_network = ttk.Combobox(
+        input_frame, state="readonly", values=network, width=10
     )
-    combo_system.grid(column=1, row=3)
+    combo_network.grid(column=1, row=3)
 
-    # tk.Label(input_frame, text="P1", height=1).grid(column=0, row=4)
-    # input_P1 = tk.Text(input_frame, width=15, height=1).get("1.0","end-1c").grid(column=1, row=4)
+    tk.Label(input_frame, text="P1", height=1).grid(column=0, row=4)
+    input_P1 = tk.Text(input_frame, width=15, height=1)
+    input_P1.grid(column=1, row=4)
 
-    # tk.Label(input_frame, text="P2", height=1).grid(column=0, row=5)
-    # input_P2 = tk.Text(input_frame, width=15, height=1).get("1.0","end-1c").grid(column=1, row=5)
+    tk.Label(input_frame, text="P2", height=1).grid(column=0, row=5)
+    input_P2 = tk.Text(input_frame, width=15, height=1)
+    input_P2.grid(column=1, row=5)
 
-    # tk.Label(input_frame, text="P3", height=1).grid(column=0, row=6)
-    # input_P3 = tk.Text(input_frame, width=15, height=1).get("1.0","end-1c").grid(column=1, row=6)
+    tk.Label(input_frame, text="P3", height=1).grid(column=0, row=6)
+    input_P3 = tk.Text(input_frame, width=15, height=1)
+    input_P3.grid(column=1, row=6)
 
-    # tk.Label(input_frame, text="P4", height=1).grid(column=0, row=7)
-    # input_P4 = tk.Text(input_frame, width=15, height=1).get("1.0","end-1c").grid(column=1, row=7)
+    tk.Label(input_frame, text="P4", height=1).grid(column=0, row=7)
+    input_P4 = tk.Text(input_frame, width=15, height=1)
+    input_P4.grid(column=1, row=7)
 
-    # tk.Label(input_frame, text="P5", height=1).grid(column=0, row=8)
-    # input_P5 = tk.Text(input_frame, width=15, height=1).get("1.0","end-1c").grid(column=1, row=8)
+    tk.Label(input_frame, text="P5", height=1).grid(column=0, row=8)
+    input_P5 = tk.Text(input_frame, width=15, height=1)
+    input_P5.grid(column=1, row=8)
 
     button_generate = tk.Button(
         input_frame,
         text="Generate!",
         width=15,
         height=1,
-        command=lambda: display_qr(generate_qr(data, config_ini)),
+        command=lambda: display_qr(generate_qr(config_ini)),
     ).grid(column=1, row=9)
 
     input_frame.pack(side=tk.LEFT, anchor="ne")
