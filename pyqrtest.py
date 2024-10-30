@@ -131,6 +131,9 @@ if __name__ == "__main__":
     # Create and name window instance
     window = tk.Tk()
     window.title("QR Code Display")
+    window.minsize(800, 550)
+
+    ic(f"{window.winfo_height()} x {window.winfo_width()}")
 
     frame = tk.Frame(window)
     frame.pack(padx=20, pady=20)
@@ -222,6 +225,7 @@ if __name__ == "__main__":
     ).grid(column=1, row=9)
 
     input_frame.pack(side=tk.LEFT, anchor="ne")
+    ic(f"{window.winfo_height()} x {window.winfo_width()}")
 
     # Start the GUI
     window.mainloop()
