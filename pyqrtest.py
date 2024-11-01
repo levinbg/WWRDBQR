@@ -53,12 +53,13 @@ def get_user_input():
         "P3": input_P3.get("1.0", "end-1c"),
         "P4": input_P4.get("1.0", "end-1c"),
         "P5": input_P5.get("1.0", "end-1c"),
-        }
+    }
 
-    user_input = {key: (None if not value else value) for key, value in user_input.items()}
+    user_input = {
+        key: (None if not value else value) for key, value in user_input.items()
+    }
 
     return user_input
-
 
 
 def generate_qr(config_data):
@@ -96,7 +97,7 @@ def initialize_ini():
     # TODO: add read interface TOML
 
     if ini_exists:
-        with open(settings_file, "r") as configfile:
+        with open(settings_file, "r", encoding="utf-8") as configfile:
             toml_settings = tomlkit.load(configfile)
     else:
         username = simpledialog.askstring("Username", "Please enter your username:")
@@ -112,8 +113,16 @@ def initialize_ini():
         toml_required["UUID"] = shortuuid.uuid()
         toml_settings.add("Required", toml_required)
 
+        toml_interface = tomlkit.table()
+        toml_interface["Question_1"] = "Question 1: "
+        toml_interface["Question_2"] = "Question 2: "
+        toml_interface["Question_3"] = "Question 3: "
+        toml_interface["Question_4"] = "Question 4: "
+        toml_interface["Question_5"] = "Question 5: "
+        toml_settings.add("Interface", toml_interface)
+
         try:
-            with open(settings_file, "w",  encoding="utf-8") as configfile:
+            with open(settings_file, "w", encoding="utf-8") as configfile:
                 configfile.write(tomlkit.dumps(toml_settings))
             # end open file
         except FileNotFoundError:
@@ -132,8 +141,6 @@ if __name__ == "__main__":
     window = tk.Tk()
     window.title("QR Code Display")
     window.minsize(800, 550)
-
-    ic(f"{window.winfo_height()} x {window.winfo_width()}")
 
     frame = tk.Frame(window)
     frame.pack(padx=20, pady=20)
@@ -179,15 +186,11 @@ if __name__ == "__main__":
     ]
 
     tk.Label(input_frame, text="Make", height=1).grid(column=0, row=0)
-    combo_make = ttk.Combobox(
-        input_frame, state="readonly", values=make, width=10
-    )
+    combo_make = ttk.Combobox(input_frame, state="readonly", values=make, width=10)
     combo_make.grid(column=1, row=0)
 
     tk.Label(input_frame, text="Model", height=1).grid(column=0, row=2)
-    combo_model = ttk.Combobox(
-        input_frame, state="readonly", values=model, width=10
-    )
+    combo_model = ttk.Combobox(input_frame, state="readonly", values=model, width=10)
     combo_model.grid(column=1, row=2)
 
     tk.Label(input_frame, text="Network", height=1).grid(column=0, row=3)
@@ -196,23 +199,33 @@ if __name__ == "__main__":
     )
     combo_network.grid(column=1, row=3)
 
-    tk.Label(input_frame, text="P1", height=1).grid(column=0, row=4)
+    tk.Label(input_frame, text=config_ini["Interface"]["Question_1"], height=1).grid(
+        column=0, row=4
+    )
     input_P1 = tk.Text(input_frame, width=15, height=1)
     input_P1.grid(column=1, row=4)
 
-    tk.Label(input_frame, text="P2", height=1).grid(column=0, row=5)
+    tk.Label(input_frame, text=config_ini["Interface"]["Question_2"], height=1).grid(
+        column=0, row=5
+    )
     input_P2 = tk.Text(input_frame, width=15, height=1)
     input_P2.grid(column=1, row=5)
 
-    tk.Label(input_frame, text="P3", height=1).grid(column=0, row=6)
+    tk.Label(input_frame, text=config_ini["Interface"]["Question_3"], height=1).grid(
+        column=0, row=6
+    )
     input_P3 = tk.Text(input_frame, width=15, height=1)
     input_P3.grid(column=1, row=6)
 
-    tk.Label(input_frame, text="P4", height=1).grid(column=0, row=7)
+    tk.Label(input_frame, text=config_ini["Interface"]["Question_4"], height=1).grid(
+        column=0, row=7
+    )
     input_P4 = tk.Text(input_frame, width=15, height=1)
     input_P4.grid(column=1, row=7)
 
-    tk.Label(input_frame, text="P5", height=1).grid(column=0, row=8)
+    tk.Label(input_frame, text=config_ini["Interface"]["Question_5"], height=1).grid(
+        column=0, row=8
+    )
     input_P5 = tk.Text(input_frame, width=15, height=1)
     input_P5.grid(column=1, row=8)
 
@@ -225,7 +238,6 @@ if __name__ == "__main__":
     ).grid(column=1, row=9)
 
     input_frame.pack(side=tk.LEFT, anchor="ne")
-    ic(f"{window.winfo_height()} x {window.winfo_width()}")
 
     # Start the GUI
     window.mainloop()
