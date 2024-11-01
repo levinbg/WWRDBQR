@@ -15,6 +15,7 @@ __status__ = "Alpha"
 """
 
 import os
+import sys
 import tkinter as tk
 from tkinter import filedialog, messagebox, simpledialog, ttk
 
@@ -40,6 +41,17 @@ def save_qr(qr):
     file_path = filedialog.asksaveasfilename(filetypes=files, defaultextension=files)
     if file_path:
         qr.save(file_path)
+
+
+def reset_app():
+    if os.path.exists("settings.toml"):
+        answer = messagebox.askokcancel(
+            "Reseet TOML", "Do you really want to delete settings.toml?"
+        )
+        if answer:
+            os.remove("settings.toml")
+            python = sys.executable
+            os.execl(python, python, *sys.argv)
 
 
 def get_user_input():
@@ -153,6 +165,7 @@ if __name__ == "__main__":
     filemenu.add_command(
         label="Save QR", command=lambda: save_qr(generate_qr(config_ini))
     )
+    filemenu.add_command(label="Reset App", command=lambda: reset_app())
     filemenu.add_separator()
     filemenu.add_command(label="Exit", command=window.quit)
     menubar.add_cascade(label="File", menu=filemenu)
@@ -199,33 +212,33 @@ if __name__ == "__main__":
     )
     combo_network.grid(column=1, row=3)
 
-    tk.Label(input_frame, text=config_ini["Interface"]["Question_1"], height=1).grid(
-        column=0, row=4
-    )
+    tk.Label(
+        input_frame, text=config_ini["Interface"]["Question_1"][:15], height=1
+    ).grid(column=0, row=4)
     input_P1 = tk.Text(input_frame, width=15, height=1)
     input_P1.grid(column=1, row=4)
 
-    tk.Label(input_frame, text=config_ini["Interface"]["Question_2"], height=1).grid(
-        column=0, row=5
-    )
+    tk.Label(
+        input_frame, text=config_ini["Interface"]["Question_2"][:15], height=1
+    ).grid(column=0, row=5)
     input_P2 = tk.Text(input_frame, width=15, height=1)
     input_P2.grid(column=1, row=5)
 
-    tk.Label(input_frame, text=config_ini["Interface"]["Question_3"], height=1).grid(
-        column=0, row=6
-    )
+    tk.Label(
+        input_frame, text=config_ini["Interface"]["Question_3"][:15], height=1
+    ).grid(column=0, row=6)
     input_P3 = tk.Text(input_frame, width=15, height=1)
     input_P3.grid(column=1, row=6)
 
-    tk.Label(input_frame, text=config_ini["Interface"]["Question_4"], height=1).grid(
-        column=0, row=7
-    )
+    tk.Label(
+        input_frame, text=config_ini["Interface"]["Question_4"][:15], height=1
+    ).grid(column=0, row=7)
     input_P4 = tk.Text(input_frame, width=15, height=1)
     input_P4.grid(column=1, row=7)
 
-    tk.Label(input_frame, text=config_ini["Interface"]["Question_5"], height=1).grid(
-        column=0, row=8
-    )
+    tk.Label(
+        input_frame, text=config_ini["Interface"]["Question_5"][:15], height=1
+    ).grid(column=0, row=8)
     input_P5 = tk.Text(input_frame, width=15, height=1)
     input_P5.grid(column=1, row=8)
 
