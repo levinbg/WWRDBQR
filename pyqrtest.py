@@ -18,8 +18,10 @@ import os
 import sys
 import tkinter as tk
 from tkinter import filedialog, messagebox, simpledialog, ttk
+from tkinterweb import HtmlFrame
 
 import qrcode
+import markdown
 import shortuuid
 import tomlkit
 from icecream import ic
@@ -41,6 +43,22 @@ def save_qr(qr):
     file_path = filedialog.asksaveasfilename(filetypes=files, defaultextension=files)
     if file_path:
         qr.save(file_path)
+
+
+def get_doc():
+    user_input = get_user_input()
+    pmi_doc_path = f"docs/{user_input["model"]}/index.md" if user_input["model"] else f"docs/default/index.md"
+
+    with open(pmi_doc_path, "r", encoding="utf-8") as md_file:
+        md_contents = md_file.read()
+
+    html_doc = markdown.markdown(md_contents)
+    doc_window = tk.Tk()
+    doc_frame = HtmlFrame(doc_window)
+    doc_frame.set_fontscale(2)
+    doc_frame.load_html(html_doc)
+    doc_frame.pack(fill="both", expand=True)
+
 
 
 def reset_app():
@@ -166,6 +184,7 @@ if __name__ == "__main__":
         label="Save QR", command=lambda: save_qr(generate_qr(config_ini))
     )
     filemenu.add_command(label="Reset App", command=lambda: reset_app())
+    filemenu.add_command(label="Get PMI Procedure", command=lambda: get_doc())
     filemenu.add_separator()
     filemenu.add_command(label="Exit", command=window.quit)
     menubar.add_cascade(label="File", menu=filemenu)
@@ -185,7 +204,16 @@ if __name__ == "__main__":
     image = Image.open("RFHSign.png").resize((qr_size, qr_size))
     base = ImageTk.PhotoImage(image)
     qr_panel = tk.Label(qr_frame, image=base)
-    qr_panel.pack()
+    qr_panel.grid(row=0, column=0)
+
+    button_generate = tk.Button(
+        qr_frame,
+        text="Generate!",
+        width=15,
+        height=1,
+        command=lambda: display_qr(generate_qr(config_ini)),
+    ).grid(column=0, row=1, sticky="E")
+
     qr_frame.pack(side=tk.RIGHT, padx=(20, 0))
 
     input_frame = tk.Frame(frame)
@@ -242,13 +270,7 @@ if __name__ == "__main__":
     input_P5 = tk.Text(input_frame, width=15, height=1)
     input_P5.grid(column=1, row=8)
 
-    button_generate = tk.Button(
-        input_frame,
-        text="Generate!",
-        width=15,
-        height=1,
-        command=lambda: display_qr(generate_qr(config_ini)),
-    ).grid(column=1, row=9)
+
 
     input_frame.pack(side=tk.LEFT, anchor="ne")
 
