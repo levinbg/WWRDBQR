@@ -1,5 +1,6 @@
 import tkinter as tk
 
+
 def create_view(root):
     root.title("My Tkinter App")
     label = tk.Label(root, text="Hello, Tkinter!")
