@@ -11,7 +11,7 @@ def test_dialog(dialog_text):
 def create_view(root):
     # Create and name window instance
     root.title("Test Application")
-    root.geometry("600x600")
+    # root.geometry("600x600")
     root.grid_rowconfigure(0, weight=1)
     root.grid_columnconfigure(0, weight=1)
 
@@ -45,7 +45,7 @@ def create_view(root):
     qr_panel = tk.Label(input_frame, image=base)
     qr_panel.grid(row=0, column=0)
 
-
+    # Add information input form
     tk.Label(input_frame, text="Make", height=1).grid(column=0, row=1)
     combo_make = ttk.Combobox(input_frame, state="readonly", values=settings.make, width=10)
     combo_make.grid(column=1, row=1)
@@ -99,4 +99,4 @@ def create_view(root):
 
     input_frame.grid(column=0, row=1, padx=20, pady=20, sticky="N")
 
-# end main
+# end create_view
